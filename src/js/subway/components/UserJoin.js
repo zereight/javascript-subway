@@ -1,7 +1,8 @@
 import { contentElements } from '../views';
 import { $ } from '../../@shared/utils';
-import { ROUTE } from '../constants/constants';
+import { ROUTE, STATE_KEY } from '../constants/constants';
 import { isValidEmail, isValidName, isValidPassword, findInValidInput } from '../utils/validate';
+import { stateManager } from '../../@shared/models/StateManager';
 
 export class UserJoin {
   constructor() {
@@ -39,10 +40,42 @@ export class UserJoin {
     const $input = findInValidInput(this.$$input);
 
     if ($input) {
-      $input.value = '';
       $input.focus();
 
       return;
+    }
+
+    try {
+      this.requestJoin();
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  async requestJoin() {
+    const res = await fetch('http://15.164.230.130:8080/members', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: this.$$input.$email.value,
+        password: this.$$input.$password.value,
+        name: this.$$input.$name.value,
+      }),
+    });
+    console.log(res);
+    switch (res.status) {
+      case 201:
+        this.$$input.$email.value = '';
+        this.$$input.$name.value = '';
+        this.$$input.$password.value = '';
+        this.$$input.$passwordConfirm.value = '';
+        history.pushState({ path: ROUTE.SIGNIN }, null, ROUTE.SIGNIN);
+        stateManager[STATE_KEY.ROUTE].set(ROUTE.SIGNIN);
+        break;
+      case 400:
+        throw new Error(`회원가입 실패`);
+      default:
+        throw new Error(`알 수 없는 오류`);
     }
   }
 
@@ -66,7 +99,7 @@ export class UserJoin {
 
   handlePasswordConfirmInput({ target: { value } }) {
     value === this.$$input.$password.value
-      ? this.$$message.passwordConfirm.classList.add('hidden')
-      : this.$$message.passwordConfirm.classList.remove('hidden');
+      ? this.$$message.$passwordConfirm.classList.add('hidden')
+      : this.$$message.$passwordConfirm.classList.remove('hidden');
   }
 }

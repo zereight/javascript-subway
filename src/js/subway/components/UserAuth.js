@@ -1,9 +1,8 @@
 import { ROUTE, STATE_KEY } from '../constants/constants';
 import { contentElements } from '../views';
 import { $ } from '../../@shared/utils';
-import { isValidEmail, isValidPassword, setCookie } from '../utils';
+import { isValidEmail, isValidPassword, setCookie, SHA256 } from '../utils';
 import { stateManager } from '../../@shared/models/StateManager';
-
 export class UserAuth {
   constructor() {
     this.$target = contentElements[ROUTE.SIGNIN];
@@ -34,12 +33,13 @@ export class UserAuth {
   }
 
   async requestLogin() {
+    console.log(SHA256(this.$$input.$password.value));
     const res = await fetch('http://15.164.230.130:8080/login/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: this.$$input.$email.value,
-        password: this.$$input.$password.value,
+        password: SHA256(this.$$input.$password.value),
       }),
     });
     console.log(res);

@@ -1,7 +1,7 @@
 import { contentElements } from '../views';
 import { $ } from '../../@shared/utils';
 import { ROUTE, STATE_KEY } from '../constants/constants';
-import { isValidEmail, isValidName, isValidPassword, findInValidInput } from '../utils/validate';
+import { isValidEmail, isValidName, isValidPassword, findInValidInput, SHA256 } from '../utils';
 import { stateManager } from '../../@shared/models/StateManager';
 
 export class UserJoin {
@@ -53,12 +53,13 @@ export class UserJoin {
   }
 
   async requestJoin() {
+    console.log(SHA256(this.$$input.$password.value));
     const res = await fetch('http://15.164.230.130:8080/members', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: this.$$input.$email.value,
-        password: this.$$input.$password.value,
+        password: SHA256(this.$$input.$password.value),
         name: this.$$input.$name.value,
       }),
     });

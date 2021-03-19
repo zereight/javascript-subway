@@ -24,7 +24,6 @@ class App {
       if (!event.target.classList.contains('js-link')) return;
       event.preventDefault();
       const path = event.target.dataset.link;
-
       history.pushState({ path }, null, path);
       stateManager[STATE_KEY.ROUTE].set(path);
     });

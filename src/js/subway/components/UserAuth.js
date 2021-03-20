@@ -36,6 +36,7 @@ export class UserAuth {
     console.log(SHA256(this.$$input.$password.value));
     const res = await fetch('http://15.164.230.130:8080/login/token', {
       method: 'POST',
+      integrity: 'sha256-abcdef',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: this.$$input.$email.value,

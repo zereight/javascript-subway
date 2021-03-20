@@ -57,6 +57,7 @@ export class UserJoin {
     const res = await fetch('http://15.164.230.130:8080/members', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      integrity: 'sha256-abcdef',
       body: JSON.stringify({
         email: this.$$input.$email.value,
         password: SHA256(this.$$input.$password.value),

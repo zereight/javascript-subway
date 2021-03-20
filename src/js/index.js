@@ -3,6 +3,7 @@ import { $ } from './@shared/utils/index';
 import { stateManager } from './@shared/models/StateManager';
 import { Subway } from './subway';
 import { STATE_KEY } from './subway/constants/constants';
+import { pushHistoryState } from './subway/utils';
 
 class App {
   constructor() {
@@ -24,7 +25,7 @@ class App {
       if (!event.target.classList.contains('js-link')) return;
       event.preventDefault();
       const path = event.target.dataset.link;
-      history.pushState({ path }, null, path);
+      pushHistoryState(path);
       stateManager[STATE_KEY.ROUTE].set(path);
     });
   }

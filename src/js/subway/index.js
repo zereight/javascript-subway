@@ -4,7 +4,7 @@ import { stateManager } from '../@shared/models/StateManager';
 import { linkButton } from '../@shared/views/templates/linkButton';
 import { MENU, MESSAGE, ROUTE, STATE_KEY } from './constants/constants';
 import { UserAuth, UserJoin } from './components';
-import { deleteCookie } from './utils';
+import { deleteCookie, pushHistoryState } from './utils';
 
 export class Subway {
   constructor() {
@@ -43,7 +43,7 @@ export class Subway {
       deleteCookie('accessToken');
       path = ROUTE.ROOT;
       stateManager[STATE_KEY.IS_SIGNED].set(false);
-      history.pushState({ path }, null, path);
+      pushHistoryState(path);
     }
     this.$mainContainer.innerHTML = '';
     this.$mainContainer.appendChild(contentElements[path]);

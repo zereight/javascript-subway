@@ -1,7 +1,7 @@
 import { ROUTE, STATE_KEY } from '../constants/constants';
 import { contentElements } from '../views';
 import { $ } from '../../@shared/utils';
-import { isValidEmail, isValidPassword, setCookie, SHA256 } from '../utils';
+import { isValidEmail, isValidPassword, pushHistoryState, setCookie, SHA256 } from '../utils';
 import { stateManager } from '../../@shared/models/StateManager';
 export class UserAuth {
   constructor() {
@@ -36,8 +36,8 @@ export class UserAuth {
     console.log(SHA256(this.$$input.$password.value));
     const res = await fetch('http://15.164.230.130:8080/login/token', {
       method: 'POST',
-      integrity: 'sha256-abcdef',
       headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify({
         email: this.$$input.$email.value,
         password: SHA256(this.$$input.$password.value),
@@ -51,11 +51,12 @@ export class UserAuth {
         setCookie('accessToken', accessToken, 3);
         this.$$input.$email.value = '';
         this.$$input.$password.value = '';
-        history.pushState({ path: ROUTE.ROOT }, null, ROUTE.ROOT);
+        pushHistoryState(ROUTE.ROOT);
         stateManager[STATE_KEY.ROUTE].set(ROUTE.ROOT);
         stateManager[STATE_KEY.IS_SIGNED].set(true);
         break;
       case 400:
+        console.log(await res.json());
         throw new Error(`로그인 실패`);
       default:
         throw new Error(`알 수 없는 오류`);

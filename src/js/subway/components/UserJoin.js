@@ -1,7 +1,7 @@
 import { contentElements } from '../views';
 import { $ } from '../../@shared/utils';
 import { ROUTE, STATE_KEY } from '../constants/constants';
-import { isValidEmail, isValidName, isValidPassword, findInValidInput, SHA256 } from '../utils';
+import { isValidEmail, isValidName, isValidPassword, findInValidInput, SHA256, pushHistoryState } from '../utils';
 import { stateManager } from '../../@shared/models/StateManager';
 
 export class UserJoin {
@@ -57,7 +57,6 @@ export class UserJoin {
     const res = await fetch('http://15.164.230.130:8080/members', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      integrity: 'sha256-abcdef',
       body: JSON.stringify({
         email: this.$$input.$email.value,
         password: SHA256(this.$$input.$password.value),
@@ -71,7 +70,7 @@ export class UserJoin {
         this.$$input.$name.value = '';
         this.$$input.$password.value = '';
         this.$$input.$passwordConfirm.value = '';
-        history.pushState({ path: ROUTE.SIGNIN }, null, ROUTE.SIGNIN);
+        pushHistoryState(ROUTE.SIGNIN);
         stateManager[STATE_KEY.ROUTE].set(ROUTE.SIGNIN);
         break;
       case 400:
